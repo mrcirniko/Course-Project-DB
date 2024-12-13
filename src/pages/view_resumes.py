@@ -33,52 +33,57 @@ def get_all_resumes(filters, sort_by):
         with get_connection() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 query = """
-                SELECT *
-                FROM ResumeSearch
+                SELECT r.*, 
+                       p.profession_name, 
+                       array_agg(DISTINCT s.skill_name) FILTER (WHERE s.skill_name IS NOT NULL) AS skills,
+                       array_agg(DISTINCT we.position) FILTER (WHERE we.position IS NOT NULL) AS positions
+                FROM Resumes r
+                JOIN Professions p ON r.profession_id = p.profession_id
+                LEFT JOIN ResumeSkills rs ON r.resume_id = rs.resume_id
+                LEFT JOIN Skills s ON rs.skill_id = s.skill_id
+                LEFT JOIN WorkExperience we ON r.user_id = we.candidate_id
                 """
                 where_clauses = []
                 values = []
 
                 # Применяем фильтры
                 if filters['age_min'] is not None:
-                    where_clauses.append("age >= %s")
+                    where_clauses.append("r.age >= %s")
                     values.append(filters['age_min'])
                 if filters['age_max'] is not None:
-                    where_clauses.append("age <= %s")
+                    where_clauses.append("r.age <= %s")
                     values.append(filters['age_max'])
                 if filters['experience_min'] is not None:
-                    where_clauses.append("experience >= %s")
+                    where_clauses.append("r.experience >= %s")
                     values.append(filters['experience_min'])
                 if filters['experience_max'] is not None:
-                    where_clauses.append("experience <= %s")
+                    where_clauses.append("r.experience <= %s")
                     values.append(filters['experience_max'])
                 if filters['profession']:
-                    where_clauses.append("profession_name = %s")
+                    where_clauses.append("p.profession_name = %s")
                     values.append(filters['profession'])
                 if filters['employment_type']:
-                    where_clauses.append("employment_type = %s")
+                    where_clauses.append("r.employment_type = %s")
                     values.append(filters['employment_type'])
 
                 if where_clauses:
                     query += " WHERE " + " AND ".join(where_clauses)
 
-                if filters['skills']:
-                    skill_conditions = " OR ".join(["%s = ANY(skills)"] * len(filters['skills']))
-                    query += f" AND ({skill_conditions})"
-                    values.extend(filters['skills'])
-
                 # Сортировка
                 if sort_by == "Возраст":
-                    query += " ORDER BY age"
+                    query += " ORDER BY r.age"
                 elif sort_by == "Опыт работы":
-                    query += " ORDER BY experience"
+                    query += " ORDER BY r.experience"
 
-                query += ";"
+                query += " GROUP BY r.resume_id, p.profession_name;"
+
                 cur.execute(query, values)
                 return cur.fetchall()
     except Exception as e:
         st.error(f"Ошибка при получении резюме: {e}")
         return []
+
+
 
 
 def is_resume_liked(candidate_id, employer_id):

@@ -71,7 +71,7 @@ CREATE TABLE LikedResumes (
     user_id INTEGER REFERENCES Candidates(user_id),
     employer_id INTEGER REFERENCES Employers(user_id),
     liked_date DATE DEFAULT CURRENT_DATE,
-    PRIMARY KEY (candidate_id, employer_id)
+    PRIMARY KEY (user_id, employer_id)
 );
 
 COMMENT ON TABLE LikedResumes IS 'Хранит информацию о понравившихся резюме';
