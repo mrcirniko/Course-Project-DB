@@ -139,7 +139,8 @@ def show_resumes_page():
     age_max = st.sidebar.number_input("Максимальный возраст", min_value=18, max_value=100, step=1, value=100)
     experience_min = st.sidebar.number_input("Минимальный опыт (лет)", min_value=0, step=1, value=0)
     experience_max = st.sidebar.number_input("Максимальный опыт (лет)", min_value=0, step=1, value=50)
-    profession = st.sidebar.selectbox("Профессия", options=[""] + professions)
+    profession_names = [""] + [profession[1] for profession in professions]
+    profession = st.sidebar.selectbox("Профессия", options=profession_names)
     employment_types = ["Полная", "Частичная", "Проектная", "Стажировка", "Волонтёрская"]
     employment_type = st.sidebar.selectbox("Тип занятости", options=[""] + employment_types)
     print(skill_suggestions)
