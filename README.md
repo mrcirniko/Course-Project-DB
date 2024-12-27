@@ -17,6 +17,11 @@
 требуется только лишь для добавления новых специальностей.  
 
 ### Для запуска:  
+
+Клонируем репозиторий:
+```
+git clone https://github.com/mrcirniko/Course-Project-DB.git
+```
 Устанавливаем необходмые компоненты:
 ```
 pip install -r .\requirements.txt
