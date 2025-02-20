@@ -9,9 +9,8 @@ def show_create_resume_page():
     st.title("Резюме еще не создано")
     st.write("Для создания резюме сначала укажите основные данные")
     
-    user_id = st.session_state['user_id']  # Получаем идентификатор пользователя из сессии
+    user_id = st.session_state['user_id']
 
-    # Загружаем список профессий для селектора
     try:
         professions = get_professions()
     except Exception as e:
@@ -21,7 +20,6 @@ def show_create_resume_page():
     profession_options = [profession[1] for profession in professions]
     profession_id = st.selectbox("Профессия", profession_options)
     
-    # Получаем ID выбранной профессии
     if profession_id in profession_options:
         profession_id = professions[profession_options.index(profession_id)][0]
     else:
@@ -44,7 +42,6 @@ def show_create_resume_page():
         except Exception as e:
             st.error(f"Ошибка при сохранении резюме: {e}")
         
-    # Добавление опыта работы
     st.subheader("Опыт работы")
     with st.expander("Добавить место работы"):
         workplace_name = st.text_input("Название компании")
@@ -62,14 +59,13 @@ def show_create_resume_page():
             except Exception as e:
                 st.error(f"Ошибка при добавлении опыта работы: {e}")
 
-    # Добавление профессиональных навыков
     st.subheader("Профессиональные навыки")
     skill_input = st.text_input("Добавьте навыки (через запятую)")
     if st.button("Сохранить навыки"):
         skills = skill_input.split(',')
         skills = [skill.strip() for skill in skills]
         try:
-            resume_id = st.session_state.get('resume_id')  # Получаем ID резюме из сессии
+            resume_id = st.session_state.get('resume_id')
             if resume_id:
                 add_skills_to_db(skills, resume_id)
                 st.success("Навыки сохранены!")
