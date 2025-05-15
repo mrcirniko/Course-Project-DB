@@ -37,8 +37,8 @@ cp ./migrations/dml.sql /tmp
 sudo -i -u postgres
 createdb mydb
 psql -d mydb
-\i /temp/ddl.sql
-\i /temp/dml.sql
+\i /tmp/ddl.sql
+\i /tmp/dml.sql
 ```
 Запускаем проект:
 ```
