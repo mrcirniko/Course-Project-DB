@@ -25,11 +25,10 @@ git clone https://github.com/mrcirniko/Course-Project-DB.git
 ```
 Устанавливаем необходмые компоненты:
 ```
-pip install -r .\requirements.txt
+pip install -r ./requirements.txt
 ```
 Копируем скрипты для создания базы данных
 ```
-cd src
 cp ./migrations/ddl.sql /tmp
 cp ./migrations/dml.sql /tmp
 ```
